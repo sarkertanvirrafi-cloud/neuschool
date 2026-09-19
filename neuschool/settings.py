@@ -65,7 +65,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'neuschool.wsgi.application'
 ASGI_APPLICATION = 'neuschool.asgi.application'
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv("NEUSCHOOL_DATABASE_URL") or os.getenv("DATABASE_URL")
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
