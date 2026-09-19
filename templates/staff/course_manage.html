@@ -1,0 +1,91 @@
+{% extends 'staff/base_staff.html' %}
+{% load form_tags %}
+{% block title %}Manage Courses | NeuSchool{% endblock %}
+{% block staff_content %}
+<div class="admin-panel">
+  <div class="admin-subtabs">
+    <a class="subtab-btn" href="{% url 'staff_course_create' %}"><span>CREATE</span></a>
+    <a class="subtab-btn active" href="{% url 'staff_course_manage' %}"><span>MANAGE</span></a>
+    <a class="subtab-btn" href="{% url 'staff_course_view' %}"><span>VIEW</span></a>
+  </div>
+  <form method="get" class="lookup-row">
+    <input class="field" type="text" name="q" value="{{ query }}" placeholder="Course ID or Course Title" required>
+    <button class="primary-btn" type="submit"><span>LOAD</span></button>
+  </form>
+
+  {% if course %}
+    <div class="loaded-course"><div><strong>{{ course.code }}</strong><h2>{{ course.title }}</h2></div><span class="notification-badge">LOADED</span></div>
+
+    <div class="drm-admin-banner">
+      <div>
+        <span class="secure-badge">VDO CIPHER DRM</span>
+        <h2>Secure Lecture Upload</h2>
+        <p>The video uploads directly from this browser to VdoCipher. Your VdoCipher API secret stays on the Django server and is never sent to the browser.</p>
+      </div>
+    </div>
+
+    <form
+      class="admin-box drm-upload-box"
+      data-drm-upload-form
+      data-upload-credentials-url="{% url 'staff_drm_upload_credentials' %}"
+      data-finalize-url="{% url 'staff_drm_finalize_upload' %}"
+    >
+      {% csrf_token %}
+      <h3>UPLOAD DRM LECTURE</h3>
+      <div class="admin-form-grid">
+        <div class="form-group">
+          <label>SECTION</label>
+          <select class="select-field" name="section_id" data-drm-section required>
+            <option value="">Select Section</option>
+            {% for section in course.sections.all %}<option value="{{ section.id }}">{{ section.order }}. {{ section.title }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>SUB SECTION (OPTIONAL)</label>
+          <select class="select-field" name="subsection_id" data-drm-subsection>
+            <option value="">No Sub Section</option>
+            {% for section in course.sections.all %}{% for subsection in section.subsections.all %}<option value="{{ subsection.id }}" data-section-id="{{ section.id }}">{{ section.title }} / {{ subsection.title }}</option>{% endfor %}{% endfor %}
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>LECTURE TITLE</label>
+          <input class="field" type="text" name="title" maxlength="240" placeholder="Lecture Title" required>
+        </div>
+        <div class="form-group">
+          <label>DURATION (MINUTES)</label>
+          <input class="field" type="number" name="duration_minutes" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label>ORDER</label>
+          <input class="field" type="number" name="order" min="1" value="1">
+        </div>
+        <div class="form-group full">
+          <label>LECTURE VIDEO</label>
+          <input class="field file-field" type="file" name="video_file" accept="video/*" required>
+        </div>
+      </div>
+      <div class="drm-upload-progress hidden" data-drm-progress>
+        <div class="drm-progress-track"><span data-drm-progress-bar></span></div>
+        <p data-drm-status>Preparing secure upload…</p>
+      </div>
+      <div class="admin-actions"><button class="primary-btn" type="submit"><span>UPLOAD SECURE LECTURE</span></button></div>
+    </form>
+
+    <div class="admin-form-grid builder-grid">
+      <form method="post" class="admin-box">{% csrf_token %}<input type="hidden" name="action" value="add_section"><input type="hidden" name="course_lookup" value="{{ course.code }}"><h3>ADD SECTION</h3><div class="form-stack">{{ section_form.title|add_class:'field' }}{{ section_form.order|add_class:'field' }}{{ section_form.errors }}</div><button class="secondary-btn" type="submit"><span>ADD SECTION</span></button></form>
+      <form method="post" class="admin-box">{% csrf_token %}<input type="hidden" name="action" value="add_subsection"><input type="hidden" name="course_lookup" value="{{ course.code }}"><h3>ADD SUB SECTION</h3><div class="form-stack">{{ subsection_form.section|add_class:'select-field' }}{{ subsection_form.title|add_class:'field' }}{{ subsection_form.order|add_class:'field' }}{{ subsection_form.errors }}</div><button class="secondary-btn" type="submit"><span>ADD SUB SECTION</span></button></form>
+      <form method="post" class="admin-box full">{% csrf_token %}<input type="hidden" name="action" value="add_lecture"><input type="hidden" name="course_lookup" value="{{ course.code }}"><h3>ATTACH EXISTING VDOCIPHER VIDEO</h3><div class="form-grid">{{ lecture_form.section|add_class:'select-field' }}{{ lecture_form.subsection|add_class:'select-field' }}{{ lecture_form.title|add_class:'field' }}{{ lecture_form.vdocipher_video_id|add_class:'field' }}{{ lecture_form.duration_minutes|add_class:'field' }}{{ lecture_form.order|add_class:'field' }}</div>{{ lecture_form.errors }}<div class="admin-actions"><button class="secondary-btn" type="submit"><span>ADD LECTURE</span></button></div></form>
+      <form method="post" enctype="multipart/form-data" class="admin-box full">{% csrf_token %}<input type="hidden" name="action" value="add_material"><input type="hidden" name="course_lookup" value="{{ course.code }}"><h3>ADD MATERIAL</h3><div class="form-grid">{{ material_form.lecture|add_class:'select-field' }}{{ material_form.title|add_class:'field' }}{{ material_form.material_file|add_class:'field file-field' }}{{ material_form.material_url|add_class:'field' }}</div>{{ material_form.errors }}<div class="admin-actions"><button class="secondary-btn gold" type="submit"><span>ADD MATERIAL</span></button></div></form>
+    </div>
+
+    <div class="builder-tree">
+      {% for section in course.sections.all %}
+        <div class="section-box"><div class="section-header"><h4>{{ section.order }}. {{ section.title }}</h4></div><div class="section-body">
+          {% for subsection in section.subsections.all %}<span class="lecture-badge">SUB: {{ subsection.title }}</span>{% endfor %}
+          {% for lecture in section.lectures.all %}<div class="lecture-card"><div class="lecture-meta"><h5>{{ lecture.title }}</h5><p>{% if lecture.subsection %}{{ lecture.subsection.title }} • {% endif %}{{ lecture.materials.count }} material{{ lecture.materials.count|pluralize }}</p></div><div class="lecture-secure-actions">{% if lecture.vdocipher_video_id %}<span class="secure-badge compact">DRM READY</span>{% else %}<span class="lecture-badge">NO VIDEO</span>{% endif %}</div></div>{% endfor %}
+        </div></div>
+      {% empty %}<div class="empty-state">No sections yet.</div>{% endfor %}
+    </div>
+  {% elif query %}<div class="empty-state">No course matched “{{ query }}”.</div>{% endif %}
+</div>
+{% endblock %}

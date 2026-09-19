@@ -1,0 +1,19 @@
+{% extends 'staff/base_staff.html' %}
+{% block title %}Q / A Admin | NeuSchool{% endblock %}
+{% block staff_content %}
+<div class="admin-panel">
+  <div class="admin-cards">
+    {% for course in courses %}<div class="admin-box"><h3>{{ course.code }} — {{ course.title }}</h3><div class="notification-badge">{{ course.unanswered_count }} NEW / {{ course.question_count }} TOTAL</div></div>{% endfor %}
+  </div>
+  <div class="qa-list admin-qa-list">
+    {% for question in questions %}
+      <div class="question-box">
+        <div class="question-top"><h5>{{ question.course.code }} — {{ question.course.title }}</h5>{% if question.lecture %}<span class="lecture-badge">{{ question.lecture.section.title }} / {{ question.lecture.title }}</span>{% endif %}</div>
+        <p><strong>{{ question.asked_by.get_full_name|default:question.asked_by.username }}:</strong> {{ question.body }}</p>
+        <div class="reply-list">{% for answer in question.answers.all %}<div class="reply-item"><strong>{% if answer.is_admin_answer %}Admin{% else %}{{ answer.author.get_full_name|default:answer.author.username }}{% endif %}:</strong> {{ answer.body }}</div>{% endfor %}</div>
+        <form method="post" class="reply-form">{% csrf_token %}<input type="hidden" name="question_id" value="{{ question.id }}"><textarea class="textarea-field small" name="body" placeholder="Admin response" required></textarea><button class="reply-btn" type="submit">ANSWER</button></form>
+      </div>
+    {% empty %}<div class="empty-state">No questions yet.</div>{% endfor %}
+  </div>
+</div>
+{% endblock %}

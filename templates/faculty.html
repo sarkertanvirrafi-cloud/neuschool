@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}NeuSchool | Faculty{% endblock %}
+{% block content %}
+<section class="page-hero reveal"><div class="page-title"><h1>FACULTY</h1></div></section>
+<section class="page-content reveal">
+  <div class="faculty-card">
+    <div class="faculty-photo">
+      {% if faculty and faculty.photo_url %}<img src="{{ faculty.photo_url }}" alt="{{ faculty.name }}">
+      {% else %}<div class="faculty-avatar">FACULTY<br>PHOTO</div>{% endif %}
+    </div>
+    <div class="faculty-info">
+      <h2>{% if faculty %}{{ faculty.name }}{% else %}Faculty Name{% endif %}</h2>
+      <div class="faculty-role">{% if faculty and faculty.title %}{{ faculty.title }}{% else %}FACULTY BIO{% endif %}</div>
+      <div class="faculty-bio">{% if faculty and faculty.bio %}{{ faculty.bio }}{% else %}Professional faculty bio will be added here later.{% endif %}</div>
+      <div class="info-list">
+        <div class="info-item"><h4>SPECIALIZATION</h4><p>{% if faculty and faculty.specialization %}{{ faculty.specialization }}{% else %}Will be added here.{% endif %}</p></div>
+        <div class="info-item"><h4>EXPERIENCE</h4><p>{% if faculty and faculty.experience %}{{ faculty.experience }}{% else %}Will be added here.{% endif %}</p></div>
+        <div class="info-item"><h4>COURSES</h4><p>{% if faculty %}{{ faculty.courses.count }} Course{{ faculty.courses.count|pluralize }}{% else %}Will be added here.{% endif %}</p></div>
+        <div class="info-item"><h4>ACADEMIC PROFILE</h4><p>{% if faculty and faculty.academic_profile %}{{ faculty.academic_profile }}{% else %}Will be added here.{% endif %}</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

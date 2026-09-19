@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+{% block title %}NeuSchool | Log In / Sign Up{% endblock %}
+{% block footer %}{% endblock %}
+{% block content %}
+<section class="auth-shell reveal">
+  <div class="auth-panel">
+    <div class="auth-side"><h1>Log In<br>or Sign Up</h1><p>Access enrollment, course sections, lectures, materials, and the learning Q / A community.</p></div>
+    <div class="auth-card">
+      {% if course_slug %}<div class="auth-note">Continue enrollment after authentication.</div>{% endif %}
+      <div class="auth-tabs">
+        <button type="button" data-auth-tab="login" class="{% if mode != 'signup' %}active{% endif %}">LOG IN</button>
+        <button type="button" data-auth-tab="signup" class="{% if mode == 'signup' %}active{% endif %}">SIGN UP</button>
+      </div>
+      <form method="post" data-auth-form="login" class="{% if mode == 'signup' %}hidden{% endif %}">
+        {% csrf_token %}<input type="hidden" name="mode" value="login"><input type="hidden" name="course" value="{{ course_slug }}">
+        {% if login_form.non_field_errors %}<div class="form-error">{{ login_form.non_field_errors }}</div>{% endif %}
+        <div class="form-grid">
+          <div class="form-group"><label>EMAIL ADDRESS</label>{{ login_form.email|add_class:'field' }}{{ login_form.email.errors }}</div>
+          <div class="form-group"><label>PASSWORD</label>{{ login_form.password|add_class:'field' }}{{ login_form.password.errors }}</div>
+        </div>
+        <div class="auth-actions"><button class="auth-submit" type="submit">LOG IN</button></div>
+      </form>
+      <form method="post" data-auth-form="signup" class="{% if mode != 'signup' %}hidden{% endif %}">
+        {% csrf_token %}<input type="hidden" name="mode" value="signup"><input type="hidden" name="course" value="{{ course_slug }}">
+        {% if signup_form.non_field_errors %}<div class="form-error">{{ signup_form.non_field_errors }}</div>{% endif %}
+        <div class="form-grid">
+          <div class="form-group"><label>NAME</label>{{ signup_form.name|add_class:'field' }}{{ signup_form.name.errors }}</div>
+          <div class="form-group"><label>EMAIL ADDRESS</label>{{ signup_form.email|add_class:'field' }}{{ signup_form.email.errors }}</div>
+          <div class="form-group"><label>PASSWORD</label>{{ signup_form.password|add_class:'field' }}{{ signup_form.password.errors }}</div>
+          <div class="form-group"><label>CONTACT INFO (OPTIONAL)</label>{{ signup_form.contact_info|add_class:'field' }}{{ signup_form.contact_info.errors }}</div>
+          <div class="form-group full"><label>MOTIVE TO JOIN OUR COMMUNITY (OPTIONAL)</label>{{ signup_form.motive|add_class:'textarea-field' }}{{ signup_form.motive.errors }}</div>
+        </div>
+        <div class="auth-actions"><button class="auth-submit" type="submit">CREATE ACCOUNT</button></div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

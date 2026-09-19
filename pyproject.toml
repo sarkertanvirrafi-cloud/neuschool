@@ -1,0 +1,17 @@
+[project]
+name = "neuschool"
+version = "2.0.0"
+description = "NeuSchool full-stack educational platform with VdoCipher DRM"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0,<6.1",
+    "dj-database-url>=2.3",
+    "psycopg[binary]>=3.2",
+    "whitenoise>=6.9",
+    "python-dotenv>=1.1",
+    "cloudinary>=1.44",
+    "requests>=2.32",
+]
+
+[tool.vercel.scripts]
+build = 'python manage.py collectstatic --noinput && if [ -n "$DATABASE_URL" ]; then python manage.py migrate --noinput && python manage.py bootstrap_admin; fi'

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}NeuSchool | My Courses{% endblock %}
+{% block content %}
+<section class="page-hero reveal"><div class="page-title"><h1>MY COURSES</h1></div></section>
+<section class="page-content reveal"><div class="course-grid">
+{% for enrollment in enrollments %}
+  {% include 'partials/course_card.html' with course=enrollment.course %}
+{% empty %}<div class="empty-state">You have not enrolled in a course yet.</div>{% endfor %}
+</div></section>
+{% endblock %}

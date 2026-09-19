@@ -1,0 +1,15 @@
+{% extends 'staff/base_staff.html' %}
+{% block title %}View Courses | NeuSchool{% endblock %}
+{% block staff_content %}
+<div class="admin-panel">
+  <div class="admin-subtabs">
+    <a class="subtab-btn" href="{% url 'staff_course_create' %}"><span>CREATE</span></a>
+    <a class="subtab-btn" href="{% url 'staff_course_manage' %}"><span>MANAGE</span></a>
+    <a class="subtab-btn active" href="{% url 'staff_course_view' %}"><span>VIEW</span></a>
+  </div>
+  <div class="admin-box"><h3>TOTAL USERS</h3><div class="user-count">{{ total_users }}</div></div>
+  <div class="admin-cards">
+    {% for course in courses %}<div class="admin-box"><h3>{{ course.code }} — {{ course.title }}</h3><div class="user-count">{{ course.user_count }}</div><p>Users Number</p><div class="admin-actions"><a class="secondary-btn" href="{% url 'staff_course_manage' %}?q={{ course.code }}"><span>MANAGE</span></a></div></div>{% empty %}<div class="empty-state">No courses yet.</div>{% endfor %}
+  </div>
+</div>
+{% endblock %}

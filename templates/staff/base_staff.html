@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="admin-wrap reveal">
+  <div class="admin-top"><h1>ADMIN</h1></div>
+  <div class="admin-tabs">
+    <a class="tab-btn {% if staff_section == 'courses' %}active{% endif %}" href="{% url 'staff_dashboard' %}"><span>COURSES</span></a>
+    <a class="tab-btn {% if staff_section == 'qa' %}active{% endif %}" href="{% url 'staff_qa' %}"><span>Q / A</span></a>
+  </div>
+  {% block staff_content %}{% endblock %}
+</section>
+{% endblock %}
+{% block footer %}{% endblock %}

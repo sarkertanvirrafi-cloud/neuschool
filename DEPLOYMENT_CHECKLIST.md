@@ -1,0 +1,22 @@
+# NeuSchool Production Deployment Checklist
+
+- [ ] Create Neon PostgreSQL project
+- [ ] Copy pooled `DATABASE_URL` with SSL enabled
+- [ ] Create VdoCipher account and copy API Secret
+- [ ] Add `VDOCIPHER_API_SECRET` to Vercel Environment Variables
+- [ ] Create a strong `DJANGO_SECRET_KEY`
+- [ ] Set `DJANGO_ALLOWED_HOSTS`
+- [ ] Set `DJANGO_CSRF_TRUSTED_ORIGINS`
+- [ ] Add Cloudinary if using banner/material uploads
+- [ ] Configure optional `VDOCIPHER_FOLDER_ID`
+- [ ] After custom domain is active, set `VDOCIPHER_ALLOWED_DOMAIN`
+- [ ] Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` for first deploy, or create superuser another secure way
+- [ ] Deploy to Vercel
+- [ ] Confirm migrations completed
+- [ ] Sign in to `/staff/`
+- [ ] Upload one DRM lecture and wait for VdoCipher processing
+- [ ] Enroll a test student
+- [ ] Confirm a non-enrolled user cannot request playback
+- [ ] Confirm an enrolled user can play the DRM lecture
+- [ ] Confirm Q/A works
+- [ ] Remove/change bootstrap admin variables if your operational policy requires it

@@ -1,0 +1,23 @@
+{% extends 'staff/base_staff.html' %}
+{% load form_tags %}
+{% block title %}Create Course | NeuSchool{% endblock %}
+{% block staff_content %}
+<div class="admin-panel">
+  <div class="admin-subtabs">
+    <a class="subtab-btn active" href="{% url 'staff_course_create' %}"><span>CREATE</span></a>
+    <a class="subtab-btn" href="{% url 'staff_course_manage' %}"><span>MANAGE</span></a>
+    <a class="subtab-btn" href="{% url 'staff_course_view' %}"><span>VIEW</span></a>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="admin-form-grid form-panel">
+    {% csrf_token %}
+    <div class="admin-box"><h3>COURSE ID</h3>{{ form.code|add_class:'field' }}{{ form.code.errors }}</div>
+    <div class="admin-box"><h3>UPLOAD COURSE BANNER</h3>{{ form.banner_file|add_class:'field file-field' }}{{ form.banner_file.errors }}</div>
+    <div class="admin-box full"><h3>COURSE TITLE</h3>{{ form.title|add_class:'field' }}{{ form.title.errors }}</div>
+    <div class="admin-box full"><h3>COURSE DESCRIPTION</h3>{{ form.description|add_class:'textarea-field' }}{{ form.description.errors }}</div>
+    <div class="admin-box"><h3>TOTAL DURATION (MINUTES)</h3>{{ form.duration_minutes|add_class:'field' }}</div>
+    <div class="admin-box"><h3>FACULTY</h3>{{ form.faculty|add_class:'select-field' }}</div>
+    <div class="admin-box full checkbox-box"><label>{{ form.is_published }} PUBLISH COURSE</label></div>
+    <div class="admin-actions full"><button class="primary-btn" type="submit"><span>CREATE COURSE</span></button></div>
+  </form>
+</div>
+{% endblock %}

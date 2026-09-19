@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static form_tags %}
+{% block title %}{{ course.title }} | NeuSchool{% endblock %}
+{% block content %}
+<section class="learning-wrap reveal">
+  <div class="learning-hero">
+    <div class="learning-hero-content">
+      <div class="learning-banner course-image {% if not course.banner_url and not course.static_banner %}placeholder{% endif %}">
+        {% if course.banner_url %}<img src="{{ course.banner_url }}" alt="{{ course.title }}">
+        {% elif course.static_banner %}<img src="{% static course.static_banner %}" alt="{{ course.title }}">
+        {% else %}<span>{{ course.banner_symbol|default:'N' }}</span>{% endif %}
+      </div>
+      <div class="learning-copy">
+        <div class="drm-hero-badge">DRM PROTECTED LEARNING</div>
+        <h1>{{ course.title }}</h1>
+        <p>{{ course.description }}</p>
+        <div class="stats-grid">
+          <div class="stat-card"><h3>COURSE ID</h3><p>{{ course.code }}</p></div>
+          <div class="stat-card"><h3>LECTURES</h3><p>{{ course.lecture_count }}</p></div>
+          <div class="stat-card"><h3>DURATION</h3><p>{{ course.formatted_duration }}</p></div>
+          <div class="stat-card"><h3>FACULTY</h3><p>{% if course.faculty %}{{ course.faculty.name }}{% else %}Faculty{% endif %}</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="learning-grid">
+    <div class="learning-card reveal">
+      <div class="course-section-heading">
+        <div>
+          <h3>COURSE SECTIONS</h3>
+          <p>Secure lectures are unlocked only after login and enrollment.</p>
+        </div>
+        <span class="secure-badge">ENCRYPTED VIDEO</span>
+      </div>
+      <div class="section-list">
+        {% for section in course.sections.all %}
+          <div class="section-box">
+            <div class="section-header">
+              <h4>SECTION {{ forloop.counter }} — {{ section.title }}</h4>
+              <span class="lecture-badge">{{ section.lectures.count }} LECTURE{{ section.lectures.count|pluralize }}</span>
+            </div>
+            <div class="section-body">
+              {% for lecture in section.lectures.all %}
+                <div class="lecture-card expanded">
+                  <div class="lecture-meta">
+                    <h5>{{ lecture.title }}</h5>
+                    <p>{% if lecture.subsection %}{{ lecture.subsection.title }} • {% endif %}{% if lecture.duration_minutes %}{{ lecture.duration_minutes }} min{% else %}Duration will be added{% endif %}</p>
+                  </div>
+                  {% if lecture.vdocipher_video_id %}
+                    <div class="lecture-secure-actions">
+                      <span class="secure-badge compact">DRM</span>
+                      <button
+                        class="details-btn drm-play-btn"
+                        type="button"
+                        data-drm-play-url="{% url 'drm_lecture_playback' lecture.id %}"
+                        data-drm-target="drm-player-{{ lecture.id }}"
+                      >PLAY SECURE LECTURE</button>
+                    </div>
+                    <div class="drm-player-shell" id="drm-player-{{ lecture.id }}">
+                      <div class="drm-placeholder">
+                        <strong>SECURE VIDEO</strong>
+                        <span>Click “Play Secure Lecture” to request a short-lived encrypted playback session.</span>
+                      </div>
+                    </div>
+                  {% else %}
+                    <div class="video-placeholder">DRM LECTURE WILL BE ADDED HERE</div>
+                  {% endif %}
+                  {% if lecture.materials.all %}
+                    <div class="material-list">
+                      {% for material in lecture.materials.all %}<a class="lecture-badge" href="{{ material.file_url }}" target="_blank" rel="noopener">{{ material.title }}</a>{% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              {% empty %}<div class="empty-state compact">Lectures will be added by the admin.</div>{% endfor %}
+            </div>
+          </div>
+        {% empty %}<div class="empty-state">Course sections will be added by the admin.</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="qa-card reveal">
+      <div class="side-box"><h4>Q / A</h4><p>Questions and answers are visible to enrolled users in this course.</p></div>
+      <form method="post" class="reply-form qa-compose">
+        {% csrf_token %}<input type="hidden" name="action" value="ask">
+        <div class="form-group"><label>LECTURE (OPTIONAL)</label>{{ question_form.lecture|add_class:'select-field' }}</div>
+        <div class="form-group"><label>QUESTION</label>{{ question_form.body|add_class:'textarea-field' }}</div>
+        <button class="auth-submit" type="submit">POST QUESTION</button>
+      </form>
+      <div class="qa-list">
+        {% for question in questions %}
+          <div class="question-box">
+            <div class="question-top"><h5>{{ question.asked_by.get_full_name|default:question.asked_by.username }}</h5>{% if question.lecture %}<span class="lecture-badge">{{ question.lecture.title }}</span>{% endif %}</div>
+            <p>{{ question.body }}</p>
+            <div class="reply-list">
+              {% for answer in question.answers.all %}<div class="reply-item"><strong>{% if answer.is_admin_answer %}Admin{% else %}{{ answer.author.get_full_name|default:answer.author.username }}{% endif %}:</strong> {{ answer.body }}</div>{% empty %}<div class="reply-item muted">No answers yet.</div>{% endfor %}
+            </div>
+            <form method="post" class="reply-form">
+              {% csrf_token %}<input type="hidden" name="action" value="answer"><input type="hidden" name="question_id" value="{{ question.id }}">
+              <textarea class="textarea-field small" name="body" placeholder="Write your answer" required></textarea>
+              <button class="reply-btn" type="submit">ADD ANSWER</button>
+            </form>
+          </div>
+        {% empty %}<div class="empty-state compact">No questions yet.</div>{% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

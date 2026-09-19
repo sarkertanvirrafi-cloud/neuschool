@@ -1,0 +1,12 @@
+{% load static %}
+<article class="course-card reveal">
+  <div class="course-image {% if not course.banner_url and not course.static_banner %}placeholder{% endif %}">
+    {% if course.banner_url %}<img src="{{ course.banner_url }}" alt="{{ course.title }}">
+    {% elif course.static_banner %}<img src="{% static course.static_banner %}" alt="{{ course.title }}">
+    {% else %}<span>{{ course.banner_symbol|default:'N' }}</span>{% endif %}
+  </div>
+  <div class="course-meta">
+    <div class="course-title-wrap"><h3>{{ course.title }}</h3><p>{{ course.code }}</p></div>
+    <a class="details-btn" href="{% url 'course_detail' course.slug %}">DETAILS</a>
+  </div>
+</article>

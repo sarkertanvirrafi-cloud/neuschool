@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}NeuSchool | Home{% endblock %}
+{% block content %}
+<section class="salam-strip reveal"><img src="{% static 'images/salam.png' %}" alt="As-salamu alaykum wa rahmatullahi wa barakatuhu"></section>
+<section class="hero reveal"><img src="{% static 'images/banner-home.png' %}" alt="NeuSchool Arabic learning banner"></section>
+
+<section class="section-pad reveal">
+  <div class="container">
+    <div class="section-heading"><h2>LEARNING ARABIC ROADMAP</h2></div>
+    <div class="roadmap-wrap">
+      <div class="roadmap-sheen"></div>
+      <div class="roadmap-stars"><span class="spark spark-1"></span><span class="spark spark-2"></span><span class="spark spark-3"></span><span class="spark spark-4"></span><span class="spark spark-5"></span><span class="spark spark-6"></span></div>
+      <svg class="roadmap-path" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="roadGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#d9a742"/><stop offset="32%" stop-color="#0db4bf"/><stop offset="68%" stop-color="#0a84d8"/><stop offset="100%" stop-color="#073f73"/></linearGradient></defs>
+        <path class="path-shadow" d="M96,416 C150,416 210,130 300,130 S450,406 504,406 S650,130 708,130 S850,406 912,406 S1050,166 1104,166"/>
+        <path class="path-base" d="M96,416 C150,416 210,130 300,130 S450,406 504,406 S650,130 708,130 S850,406 912,406 S1050,166 1104,166"/>
+        <path class="path-line" d="M96,416 C150,416 210,130 300,130 S450,406 504,406 S650,130 708,130 S850,406 912,406 S1050,166 1104,166"/>
+      </svg>
+      <div class="road-runner"></div>
+      {% for step in '123456' %}<button class="step-node node-{{ step }}" data-step="{{ step }}" type="button"><span>STEP {{ step }}</span></button>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section-pad reveal">
+  <div class="container">
+    <div class="section-heading"><h2>STUDENT REVIEW</h2></div>
+    <div class="reviews-grid">
+      {% for n in '123456' %}<article class="review-card reveal"><div class="quote-mark">“</div><h3>STUDENT REVIEW 0{{ n }}</h3><p>Review content will appear here.</p></article>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section-pad reveal">
+  <div class="container">
+    <div class="section-heading"><h2>OUR COURSES</h2></div>
+    <div class="course-grid">
+      {% for course in courses %}{% include 'partials/course_card.html' with course=course %}{% empty %}<div class="empty-state">Courses will appear here after the database is initialized.</div>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<div class="step-modal" id="stepModal" aria-hidden="true">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card">
+    <button class="modal-close" type="button" data-close-modal>×</button>
+    <div class="modal-step-badge" id="modalBadge">STEP 1</div>
+    <h3 id="modalTitle">STEP 1</h3>
+    <p id="modalText">Step 1 details will appear here.</p>
+  </div>
+</div>
+{% endblock %}

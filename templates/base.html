@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#073f73">
+  <title>{% block title %}NeuSchool{% endblock %}</title>
+  <meta name="description" content="NeuSchool premium educational platform">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="{% url 'home' %}" aria-label="NeuSchool home">
+        <img src="{% static 'images/neuschool-logo.png' %}" alt="NeuSchool">
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Toggle navigation" data-menu-toggle>MENU</button>
+      <nav class="main-nav" aria-label="Main navigation" data-main-nav>
+        <a class="nav-btn {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}"><span>HOME</span></a>
+        <a class="nav-btn {% if request.resolver_match.url_name == 'courses' or request.resolver_match.url_name == 'course_detail' %}active{% endif %}" href="{% url 'courses' %}"><span>COURSES</span></a>
+        <a class="nav-btn {% if request.resolver_match.url_name == 'faculty' %}active{% endif %}" href="{% url 'faculty' %}"><span>FACULTY</span></a>
+        {% if request.user.is_authenticated %}
+          <a class="nav-btn" href="{% url 'my_courses' %}"><span>MY COURSES</span></a>
+          {% if request.user.is_staff %}<a class="nav-btn" href="{% url 'staff_dashboard' %}"><span>ADMIN</span></a>{% endif %}
+          <a class="nav-btn nav-btn-accent" href="{% url 'logout' %}"><span>LOG OUT</span></a>
+        {% else %}
+          <a class="nav-btn nav-btn-accent {% if request.resolver_match.url_name == 'auth' %}active{% endif %}" href="{% url 'auth' %}"><span>LOG IN / SIGN UP</span></a>
+        {% endif %}
+      </nav>
+    </header>
+
+    {% if messages %}
+      <div class="messages-wrap">
+        {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    {% block footer %}
+      <footer class="footer">
+        <div class="footer-grid">
+          <div class="footer-block"><h3>ADDRESS</h3><p>{{ SITE_ADDRESS }}</p></div>
+          <div class="footer-block"><h3>CONTACT INFO</h3><p>{{ SITE_CONTACT }}</p></div>
+          <div class="footer-block"><h3>POWERED BY</h3><p><a href="https://neubyte.tech" target="_blank" rel="noopener">Neubyte.tech</a></p></div>
+        </div>
+      </footer>
+    {% endblock %}
+  </div>
+  <script src="{% static 'js/app.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

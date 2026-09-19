@@ -1,0 +1,16 @@
+{% extends 'staff/base_staff.html' %}
+{% block title %}NeuSchool Admin{% endblock %}
+{% block staff_content %}
+<div class="admin-panel">
+  <div class="admin-subtabs">
+    <a class="subtab-btn" href="{% url 'staff_course_create' %}"><span>CREATE</span></a>
+    <a class="subtab-btn" href="{% url 'staff_course_manage' %}"><span>MANAGE</span></a>
+    <a class="subtab-btn" href="{% url 'staff_course_view' %}"><span>VIEW</span></a>
+  </div>
+  <div class="admin-cards stats-admin">
+    <div class="admin-box"><h3>COURSES</h3><div class="user-count">{{ total_courses }}</div></div>
+    <div class="admin-box"><h3>USERS</h3><div class="user-count">{{ total_users }}</div></div>
+    <div class="admin-box"><h3>UNANSWERED Q / A</h3><div class="user-count">{{ unanswered }}</div></div>
+  </div>
+</div>
+{% endblock %}

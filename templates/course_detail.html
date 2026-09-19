@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ course.title }} | NeuSchool{% endblock %}
+{% block content %}
+<section class="page-content detail-wrap reveal">
+  <div class="course-detail-card">
+    <div class="detail-banner course-image {% if not course.banner_url and not course.static_banner %}placeholder{% endif %}">
+      {% if course.banner_url %}<img src="{{ course.banner_url }}" alt="{{ course.title }}">
+      {% elif course.static_banner %}<img src="{% static course.static_banner %}" alt="{{ course.title }}">
+      {% else %}<span>{{ course.banner_symbol|default:'N' }}</span>{% endif %}
+    </div>
+    <div class="detail-content">
+      <div class="modal-badge">{{ course.code }}</div>
+      <h1>{{ course.title }}</h1>
+      <p class="detail-description">{{ course.description }}</p>
+      <div class="course-info-list">
+        <div class="course-info-item"><strong>Course Description:</strong> {{ course.description }}</div>
+        <div class="course-info-item"><strong>Course Curriculum:</strong> {% for section in course.sections.all %}{{ section.title }}{% if not forloop.last %}, {% endif %}{% empty %}Will be added by the admin.{% endfor %}</div>
+        <div class="course-info-item"><strong>Lecture Videos Number:</strong> {{ course.lecture_count }}</div>
+        <div class="course-info-item"><strong>Total Course Duration:</strong> {{ course.formatted_duration }}</div>
+        <div class="course-info-item"><strong>Faculty Name:</strong> {% if course.faculty %}{{ course.faculty.name }}{% else %}Will be added{% endif %}</div>
+      </div>
+      <div class="modal-actions">
+        {% if request.user.is_authenticated %}
+          {% if is_enrolled %}<a class="enroll-btn gold" href="{% url 'course_learning' course.slug %}">OPEN COURSE</a>
+          {% else %}<form method="post" action="{% url 'enroll_course' course.slug %}">{% csrf_token %}<button class="enroll-btn gold" type="submit">ENROLL</button></form>{% endif %}
+        {% else %}
+          <a class="enroll-btn gold" href="{% url 'auth' %}?course={{ course.slug }}">ENROLL</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
