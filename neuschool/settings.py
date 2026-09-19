@@ -68,8 +68,8 @@ ASGI_APPLICATION = 'neuschool.asgi.application'
 DATABASE_URL = os.getenv("NEUSCHOOL_DATABASE_URL") or os.getenv("DATABASE_URL")
 if DATABASE_URL:
     DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
+        "default": dj_database_url.parse(
+            DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
             ssl_require=not DEBUG,
@@ -77,9 +77,9 @@ if DATABASE_URL:
     }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 
